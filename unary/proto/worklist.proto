@@ -1,0 +1,62 @@
+syntax = "proto3";
+
+
+package grpc;
+import "google/protobuf/empty.proto";
+
+option go_package="github.com/MarceloBaeza/grpc-test-Worklist/proto";
+
+message Work {
+   enum WorkPriority{
+      LOW = 0;
+      MID = 50;
+      HIGH = 100;
+   }
+   enum WorkStatus{
+      INACTIVE = 0;
+      ACTIVE = 1;
+   }
+   string id = 1;
+   string name = 2;
+   WorkPriority priority = 3;
+   WorkStatus statusWork = 5;
+}
+
+message WorkList{
+   enum WorkListStatus{
+      INACTIVE = 0;
+      ACTIVE = 1;
+   }
+   string id = 1;
+   string name = 2;
+   WorkListStatus  status = 3;
+   repeated Work works = 4;
+}
+
+message InputRequestCreateListWork{
+   string name = 1;
+}
+message RequestWorkAssociateListWorks{
+   Work newWork = 1;
+   string idList = 2;
+}
+message RequestCreateWork{
+   Work newWork = 1;
+}
+message RequestDeleteWork{
+   string newWork = 1;
+}
+message ResponseWorkList{
+   repeated WorkList listWorks = 1;
+}
+
+service worklistService{
+   rpc CreateListWork(InputRequestCreateListWork) returns (WorkList);
+   rpc CreateWorkOfListWorks(RequestWorkAssociateListWorks) returns (google.protobuf.Empty);
+   rpc CreateWork(RequestCreateWork) returns (google.protobuf.Empty);
+   rpc DeleteWork(RequestDeleteWork) returns (google.protobuf.Empty);
+   rpc ListWorks(google.protobuf.Empty) returns (ResponseWorkList);
+}
+// protoc --go_out=. --go_opt=paths=source_relative --go-grpc_out=. --go-grpc_opt=paths=source_relative proto/Worklist.proto
+
+
