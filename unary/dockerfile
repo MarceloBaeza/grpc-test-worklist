@@ -1,0 +1,15 @@
+FROM golang:1.18.10-bullseye
+
+
+WORKDIR /app
+
+COPY . .
+
+RUN go mod download && go mod verify
+
+# RUN cd server && go build -o server
+
+EXPOSE 50051
+
+# CMD ["./server"]
+ENTRYPOINT cd server && go run main.go

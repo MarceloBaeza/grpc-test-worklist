@@ -19,7 +19,7 @@ message Work {
    string id = 1;
    string name = 2;
    WorkPriority priority = 3;
-   WorkStatus statusWork = 5;
+   WorkStatus statusWork = 4;
 }
 
 message WorkList{

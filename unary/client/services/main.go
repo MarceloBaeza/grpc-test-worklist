@@ -3,6 +3,7 @@ package services
 import (
 	"context"
 	"encoding/json"
+	"fmt"
 	"io/ioutil"
 	"log"
 	"math/rand"
@@ -49,12 +50,16 @@ func (ss *ServiceStruct) NewWork(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, msg, http.StatusBadRequest)
 		return
 	}
+	id := generateID()
+	priority := pb.Work_WorkPriority(newWork.Priority)
+	statusWork := pb.Work_WorkStatus(0)
+	timeStart := time.Now()
 	_, err = ss.Client.CreateWork(context.Background(), &pb.RequestCreateWork{
 		NewWork: &pb.Work{
-			Id:         generateID(),
-			Name:       newWork.Name,
-			Priority:   pb.Work_WorkPriority(newWork.Priority),
-			StatusWork: pb.Work_WorkStatus(0),
+			Id:         id,
+			Name:       "toby",
+			Priority:   priority,
+			StatusWork: statusWork,
 		},
 	})
 	if err != nil {
@@ -63,7 +68,9 @@ func (ss *ServiceStruct) NewWork(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, msg, http.StatusBadRequest)
 		return
 	}
-	w.WriteHeader(http.StatusCreated)
+	duration := time.Since(timeStart)
+
+	w.Write([]byte(fmt.Sprintf("%d", duration.Milliseconds())))
 }
 
 func generateID() string {
